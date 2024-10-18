@@ -49,7 +49,7 @@ public class CreateCategoryActivity extends AppCompatActivity {
                 categoryName.setError("Введіть назву");
                 return;
             } else if (imageUri == null) {
-                // Вивести повідомлення про необхідність вибору фото
+                //
                 return;
             }
             Intent intent = new Intent();
@@ -65,7 +65,7 @@ public class CreateCategoryActivity extends AppCompatActivity {
             uri -> {
                 if (uri != null) {
                     imageUri = uri;
-                    // Встановлення вибраного фото в ImageView
+                    //
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
                         categoryImage.setImageBitmap(bitmap);
