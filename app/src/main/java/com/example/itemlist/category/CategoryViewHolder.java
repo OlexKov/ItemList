@@ -12,16 +12,16 @@ import com.example.itemlist.R;
 public  class CategoryViewHolder extends RecyclerView.ViewHolder {
 
     ImageView categoryImage;
-    TextView categoryTitle;
+    TextView categoryName;
 
     public CategoryViewHolder(@NonNull View itemView) {
         super(itemView);
         categoryImage = itemView.findViewById(R.id.itemImage);
-        categoryTitle = itemView.findViewById(R.id.itemTitle);
+        categoryName = itemView.findViewById(R.id.itemTitle);
     }
 
     public TextView categoryName() {
-        return categoryTitle;
+        return categoryName;
     }
 
     public ImageView categoryImage() {

@@ -33,13 +33,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         Category item = itemList.get(position);
-        String url = Urls.BASE + "/images/"+ item.getImage();
+        String url = Urls.BASE + "/images/200_"+ item.getImage();
         Glide.with(holder.itemView.getContext())
                 .load(url)
                 .apply(new RequestOptions().override(300))
                 .into(holder.categoryImage);
 
-        holder.categoryTitle.setText(item.getTitle());
+        holder.categoryName.setText(item.getName());
     }
 
     @Override

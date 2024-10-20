@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -58,12 +60,18 @@ public class MainActivity extends AppCompatActivity {
     private final ActivityResultLauncher<Intent> startActivityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    Category category = result.getData().getParcelableExtra("category");
-                    if (category != null) {
-                        categoryList.add(category);
-                        adapter.notifyDataSetChanged();
-                    }
+                if (result.getResultCode() == RESULT_OK ) {
+                    LoadCategories();
+                    Toast.makeText(this, "Категорія успішно збережена", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    new AlertDialog.Builder(this)
+                            .setTitle("Помилка")
+                            .setMessage("Помилка збереження категорії" )
+                            .setPositiveButton("ОК", (dialog, which) -> {
+                               dialog.cancel();
+                            })
+                           .show();
                 }
             });
 
