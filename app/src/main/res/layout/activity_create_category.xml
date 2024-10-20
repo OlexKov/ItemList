@@ -45,7 +45,7 @@
             android:layout_gravity="center"
             android:layout_marginBottom="16dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher_background" />
+            android:src="@drawable/noimage" />
 
         <EditText
             android:id="@+id/category_name"

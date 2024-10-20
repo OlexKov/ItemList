@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                     LoadCategories();
                     Toast.makeText(this, "Категорія успішно збережена", Toast.LENGTH_SHORT).show();
                 }
-                else{
+                else if(result.getResultCode() != RESULT_CANCELED){
                     new AlertDialog.Builder(this)
                             .setTitle("Помилка")
                             .setMessage("Помилка збереження категорії" )

@@ -1,7 +1,11 @@
 package com.example.itemlist.activities;
 
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -14,6 +18,8 @@ import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -31,9 +37,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CreateCategoryActivity extends AppCompatActivity {
-    private static final int PICK_IMAGE_REQUEST = 1;
     private ImageView categoryImage;
-    private Uri imageUri;
+    private File imageFile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +55,7 @@ public class CreateCategoryActivity extends AppCompatActivity {
         Button loadPhotoButton = findViewById(R.id.load_photo_button);
         categoryImage = findViewById(R.id.category_image);
         Button saveButton = findViewById(R.id.save_button);
+
 
         loadPhotoButton.setOnClickListener(view -> getImage.launch("image/*"));
 
@@ -71,11 +77,11 @@ public class CreateCategoryActivity extends AppCompatActivity {
             }
             // Створення RequestBody для файлу
             MultipartBody.Part filePart = null;
-            if(imageUri != null){
-                File imageFile = new File(getRealPathFromURI(this,imageUri));
+            if(imageFile!=null && imageFile.exists()){
                 RequestBody fileRequestBody = RequestBody.create( imageFile,MediaType.parse("image/jpeg"));
                 filePart = MultipartBody.Part.createFormData("imageFile", imageFile.getName(), fileRequestBody);
             }
+
             // Створення RequestBody для текстових полів
             RequestBody idRequestBody = RequestBody.create(String.valueOf(0),MediaType.parse("text/plain"));
             RequestBody nameRequestBody = RequestBody.create(name,MediaType.parse("text/plain"));
@@ -93,12 +99,10 @@ public class CreateCategoryActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<Category> call, Throwable throwable) {
-                            setResult(RESULT_CANCELED);
+                            setResult(-100);
                             finish();
                         }
                     });
-
-
         });
     }
     public String getRealPathFromURI(Context context, Uri uri) {
@@ -119,10 +123,18 @@ public class CreateCategoryActivity extends AppCompatActivity {
             new ActivityResultContracts.GetContent(),
             uri -> {
                 if (uri != null) {
-                    imageUri = uri;
-                    //
+
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        // Якщо дозвіл не надано, запитуємо його
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                1);
+                    }
+
                     try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                        imageFile = new File(getRealPathFromURI(this,uri));
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                         categoryImage.setImageBitmap(bitmap);
                     } catch (Exception e) {
                         e.printStackTrace();
